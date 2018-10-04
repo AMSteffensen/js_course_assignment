@@ -1,83 +1,101 @@
 // refer to question 1 before development starts for scope document
 // connect to this api https://api.magicthegathering.io/v1/cards
 var API_URL = 'https://api.magicthegathering.io/v1/cards';
-
-fetch(API_URL)
-// Convert the results to JSON format
+ 
+// get cards from api
+function loadCards(filterSearch) {
+    fetch(API_URL)
+    // Convert the results to JSON format
     .then(result => result.json())
-  .then((result) => {
-    // Call the function from the method that returns the JSON data and pass in the JSON data.
-    createCard(result);
-    
-  })
-.catch(err => console.log(err))
+    .then((result) => {
+        createCards(result, filterSearch);
+    })
+    .catch(err => console.log(err))
+    }
 
 // Create a function, that takes the JSON Object as an argument.
-function createCard(result){
-    // get cards div element
-    var output = document.getElementById('cards');
-    // create arry of cards with json result
-    var cards = result.cards;
+function createCards(result, filterSearch){
+    // test if function takes users search string as an argument
+    if(filterSearch) {
+        console.log(filterSearch);
 
-    for (i = 0; i < cards.length; i++) {
-        // Create Column Elements
-        var cardColumn = document.createElement('div');
-        cardColumn.className = "col-sm-4";
-
-        var cardContainer = document.createElement('div');
-        cardContainer.className="card-container";
-
-        // Append HTML Elements
-        output.appendChild(cardColumn);
-        cardColumn.appendChild(cardContainer)
-
-        // create Heading Element
-        var cardName = document.createElement('h4');
-        cardName.innerHTML = cards[i].name;
-
-        cardContainer.appendChild(cardName);
-
-        // create Image elements
-        var imageUrl = document.createElement('img');
-        imageUrl.src = cards[i].imageUrl;
-        imageUrl.style.width = '100%';
+        // filter through all the results by the value that was in the textbox.
+        var searchResult = [];
+        // searchResult = card.name.toLowerCase().indexOf(searchString.toLowerCase()) !== -1);
         
-        cardContainer.appendChild(imageUrl);
-
-        // create view more button
-        var viewMoreBtn = document.createElement("a");
-        // pass query string in url
-        var imageLink = "card-specific.html?id=" + cards[i].id;
-        viewMoreBtn.innerHTML = "View More";
-        viewMoreBtn.className = "btn btn-success";
-        cardContainer.appendChild(viewMoreBtn);
+        // Add results to a new array and the new array should be 
+        
+        // display user search string
     
-        cardName.innerHTML = cards[i].name;
-        imageUrl.src = cards[i].imageUrl;
-    
-        viewMoreBtn.setAttribute("href", imageLink);
-    }
-}    
+        // if the app does not find any results show message
+ 
 
-function search() {
-    // click event
-    var searchBtn = document.getElementById("searchButton").addEventListener("click");
+    // if page loads without search string create all cards
+    } else {
+        // get cards div element
+        var output = document.getElementById('cards');
+        // create arry of cards with json result
+        var cards = result.cards;
 
-    // delete all the HTML inside the div that has the ID “cards” attached to it.
-    var cards = document.getElementById("cards");
-    cards.style.display = 'none';
+            for (i = 0; i < cards.length; i++) {
+                // Create Column Elements
+                var cardColumn = document.createElement('div');
+                cardColumn.className = "col-sm-4";
+
+                var cardContainer = document.createElement('div');
+                cardContainer.className="card-container";
+
+                // Append HTML Elements
+                output.appendChild(cardColumn);
+                cardColumn.appendChild(cardContainer)
+
+                // create Heading Element
+                var cardName = document.createElement('h4');
+                cardName.innerHTML = cards[i].name;
+
+                cardContainer.appendChild(cardName);
+
+                // create Image elements
+                var imageUrl = document.createElement('img');
+                imageUrl.src = cards[i].imageUrl;
+                imageUrl.style.width = '100%';
+                
+                cardContainer.appendChild(imageUrl);
+
+                // create view more button
+                var viewMoreBtn = document.createElement("a");
+                // pass query string in url
+                var imageLink = "card-specific.html?id=" + cards[i].id;
+                viewMoreBtn.innerHTML = "View More";
+                viewMoreBtn.className = "btn btn-success";
+                cardContainer.appendChild(viewMoreBtn);
+            
+                cardName.innerHTML = cards[i].name;
+                imageUrl.src = cards[i].imageUrl;
+            
+                viewMoreBtn.setAttribute("href", imageLink); 
+        }
+    } 
+}
   
-    // get value from search box
-
-    // make call to the api, get back results
-
-
-    // filter through all the results by the value that was in the textbox.
+// when search button clicked, call card search function
+function addEventListener() {
+    document.getElementById('searchButton').addEventListener('click', doCardSearch);
 }
 
-/*
+// when search button clicked, load new cards from users search string
+function doCardSearch(event) {
+    event.preventDefault();
+    // clear out cards
+    cards.innerHTML = null;
+    // take users input and store as string
+    var searchString = document.getElementById('search').value;
+    // call load cards passing user search string
+    loadCards(searchString);
+  }
 
-
-If it finds any results it should be added to a new array and the new array should be display as HTML like you did with all the cards but it should only return what the user searched for. If the application doesn’t find any results a suitable message should be displayed.
-Please write all js in the script.js file.
-*/
+// Make self invoking function for loading scripts
+(function() {
+    loadCards();
+    addEventListener();
+  })();
