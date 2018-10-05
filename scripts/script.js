@@ -13,68 +13,80 @@ function loadCards(filterSearch) {
     .catch(err => console.log(err))
     }
 
+
 // Create a function, that takes the JSON Object as an argument.
 function createCards(result, filterSearch){
-    // test if function takes users search string as an argument
-    if(filterSearch) {
-        console.log(filterSearch);
+    // get cards div element for all cards
+    var htmlOutput = document.getElementById('cards');
+    // create search result array
+    var searchResult = [];
+    // store arry json result
+    var allCards = result.cards;
 
-        // filter through all the results by the value that was in the textbox.
-        var searchResult = [];
-        // searchResult = card.name.toLowerCase().indexOf(searchString.toLowerCase()) !== -1);
-        
-        // Add results to a new array and the new array should be 
-        
-        // display user search string
-    
-        // if the app does not find any results show message
- 
+    // if search string is passed, create cards from search result array
+    if(filterSearch) {  
+    // filter through all the results, place them in a new array.  
+        searchResult = allCards.filter(card => card.name.toLowerCase().indexOf(filterSearch.toLowerCase()) !== -1);
+
+        // create all card elements from search string
+        for (i = 0; i < searchResult.length; i++) {
+            
+            // create html elements for card
+            var cardColumn = document.createElement('div');
+            var cardContainer = document.createElement('div');
+            var cardName = document.createElement("h4");
+            var cardImage = document.createElement("img");
+            var cardBtn = document.createElement("a");
+            var imageLink = "card-specific.html?id=" + searchResult[i].id;
+
+            // define html elements attributes
+            cardColumn.className = "col-sm-4";
+            cardContainer.className = "card-container";             
+            cardImage.style.width = "100%";
+            cardImage.src = searchResult[i].imageUrl;
+            cardName.textContent = searchResult[i].name;
+            cardBtn.textContent = "View More";
+            cardBtn.className = "btn btn-success";
+            cardBtn.setAttribute("href", imageLink);
+     
+            // draw html elements to document
+            htmlOutput.appendChild(cardColumn);
+            cardColumn.appendChild(cardContainer);
+            cardContainer.appendChild(cardName);
+            cardContainer.appendChild(cardImage);
+            cardContainer.appendChild(cardBtn);
+      
+        }
 
     // if page loads without search string create all cards
-    } else {
-        // get cards div element
-        var output = document.getElementById('cards');
-        // create arry of cards with json result
-        var cards = result.cards;
-
-            for (i = 0; i < cards.length; i++) {
-                // Create Column Elements
+    }  else {
+            for (i = 0; i < allCards.length; i++) {
+                // create html elements
                 var cardColumn = document.createElement('div');
-                cardColumn.className = "col-sm-4";
-
                 var cardContainer = document.createElement('div');
-                cardContainer.className="card-container";
-
-                // Append HTML Elements
-                output.appendChild(cardColumn);
-                cardColumn.appendChild(cardContainer)
-
-                // create Heading Element
                 var cardName = document.createElement('h4');
-                cardName.innerHTML = cards[i].name;
-
-                cardContainer.appendChild(cardName);
-
-                // create Image elements
-                var imageUrl = document.createElement('img');
-                imageUrl.src = cards[i].imageUrl;
-                imageUrl.style.width = '100%';
+                var cardImage = document.createElement('img');
+                var cardBtn = document.createElement("a");
+                var imageLink = "card-specific.html?id=" + allCards[i].id;
                 
-                cardContainer.appendChild(imageUrl);
-
-                // create view more button
-                var viewMoreBtn = document.createElement("a");
-                // pass query string in url
-                var imageLink = "card-specific.html?id=" + cards[i].id;
-                viewMoreBtn.innerHTML = "View More";
-                viewMoreBtn.className = "btn btn-success";
-                cardContainer.appendChild(viewMoreBtn);
-            
-                cardName.innerHTML = cards[i].name;
-                imageUrl.src = cards[i].imageUrl;
-            
-                viewMoreBtn.setAttribute("href", imageLink); 
+                // define html attributes
+                cardColumn.className = "col-sm-4";
+                cardContainer.className="card-container";
+                cardName.innerHTML = allCards[i].name;
+                cardImage.src = allCards[i].imageUrl;
+                cardImage.style.width = '100%';
+                cardBtn.setAttribute("href", imageLink);
+                cardBtn.innerHTML = "View More";
+                cardBtn.className = "btn btn-success"; 
+                
+                // draw html elements to document
+                htmlOutput.appendChild(cardColumn);
+                cardColumn.appendChild(cardContainer)
+                cardContainer.appendChild(cardName);
+                cardContainer.appendChild(cardImage);
+                cardContainer.appendChild(cardBtn);
         }
+    // // if the app does not find any results show message
     } 
 }
   
